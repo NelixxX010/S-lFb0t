@@ -188,7 +188,7 @@ async def serveurinfo(ctx):
         discord.VerificationLevel.low: "Faible",
         discord.VerificationLevel.medium: "Moyenne",
         discord.VerificationLevel.high: "Élevée",
-        discord.VerificationLevel.highest: "Maximum"
+        discord.VerificationLevel.very_high: "Maximum"
     }
     embed.add_field(name="Niveau de vérification", value=verification_level.get(guild.verification_level, "Inconnu"))
     
