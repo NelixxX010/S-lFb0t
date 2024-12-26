@@ -40,54 +40,85 @@ async def on_ready():
     print(f'{Fore.RED + Style.BRIGHT}SelfBot connecté en tant que {bot.user.name}{Style.RESET_ALL}')
 
 @bot.command()
-async def aide(ctx):
-    help_text = f"""
-    {Fore.GREEN + Style.BRIGHT}**Commandes disponibles:**{Style.RESET_ALL}
-    +aide - Affiche cette aide
-    +ping - Vérifie la latence du bot
-    +avatar [utilisateur] - Affiche l'avatar d'un utilisateur
-    +userinfo [utilisateur] - Affiche les informations d'un utilisateur
-    +serveurinfo - Affiche les informations du serveur
-    +clear [nombre] - Supprime un nombre spécifié de messages
-    +meteo [ville] - Affiche la météo d'une ville
-    +roll [max] - Lance un dé avec un maximum spécifié
-    +status [type] [texte] - Change le statut du bot (type: game/watching/listening/stream)
-    +say [message] - Envoie un message
-    +embed [titre] [description] - Envoie un embed
-    +servericon - Affiche l'icône du serveur
-    +servercount - Affiche le nombre de serveurs où le bot est présent
-    +nickname [nouveau pseudo] - Change le pseudo de l'utilisateur
-    +poll [question] [options] - Crée un sondage
-    +calc [expression] - Évalue une expression mathématique
-    +ascii [texte] - Crée un ASCII art
-    +remind [temps] [rappel] - Rappelle un événement
-    +ban [membre] [raison] - Banni un membre
-    +kick [membre] [raison] - Expulse un membre
-    +mute [membre] [raison] - Met un membre en mode muet
-    +unmute [membre] - Enlève le mode muet d'un membre
-    +role [membre] [rôle] - Donne ou retire un rôle à un membre
-    +purge [nombre] - Supprime un nombre spécifié de messages
-    +slowmode [secondes] - Définit le mode lent d'un canal
-    +lock - Verrouille un canal
-    +unlock - Déverrouille un canal
-    +giveaway [temps] [prix] - Crée un giveaway
-    +weather [ville] - Affiche la météo d'une ville
-    +translate [langue] [texte] - Traduit un texte
-    +joke - Envoie une blague
-    +morse [texte] - Convertit un texte en morse
-    +spotify [recherche] - Recherche une musique sur Spotify
-    +qrcode [texte] - Génère un QR code
-    +password [longueur] - Génère un mot de passe
-    +poll_advanced [question] [options] - Crée un sondage avancé
-    +todo [action] [item] - Gère une liste de tâches
-    +timer [secondes] - Démarre un timer
-    +urban [terme] - Recherche un terme sur Urban Dictionary
-    +wiki [recherche] - Recherche sur Wikipedia
-    +stats - Affiche les statistiques du bot
-    +anime [titre] - Recherche un anime
-    +github [utilisateur] - Recherche un utilisateur sur GitHub
-    """
-    await ctx.send(help_text)
+async def aide(ctx, categorie=None):
+    if categorie is None:
+        help_menu = """
+        **Catégories de commandes disponibles:**
+        `+aide moderation` - Commandes de modération
+        `+aide utilitaires` - Commandes utilitaires
+        `+aide fun` - Commandes fun
+        `+aide info` - Commandes d'information
+        `+aide recherche` - Commandes de recherche
+        """
+        await ctx.send(help_menu)
+        return
+
+    if categorie.lower() == "moderation":
+        mod_help = """
+        **Commandes de modération:**
+        `+ban [membre] [raison]` - Banni un membre
+        `+kick [membre] [raison]` - Expulse un membre
+        `+mute [membre] [raison]` - Met un membre en mode muet
+        `+unmute [membre]` - Enlève le mode muet
+        `+role [membre] [rôle]` - Gère les rôles
+        `+purge [nombre]` - Supprime des messages
+        `+slowmode [secondes]` - Mode lent
+        `+lock` - Verrouille le canal
+        `+unlock` - Déverrouille le canal
+        """
+        await ctx.send(mod_help)
+
+    elif categorie.lower() == "utilitaires":
+        util_help = """
+        **Commandes utilitaires:**
+        `+ping` - Vérifie la latence
+        `+clear [nombre]` - Supprime des messages
+        `+qrcode [texte]` - Génère un QR code
+        `+password [longueur]` - Génère un mot de passe
+        `+todo [action] [item]` - Gère une liste de tâches
+        `+timer [secondes]` - Démarre un timer
+        `+stats` - Statistiques du bot
+        """
+        await ctx.send(util_help)
+
+    elif categorie.lower() == "fun":
+        fun_help = """
+        **Commandes fun:**
+        `+say [message]` - Envoie un message
+        `+embed [titre] [description]` - Crée un embed
+        `+poll [question] [options]` - Crée un sondage
+        `+poll_advanced [question] [options]` - Sondage avancé
+        `+giveaway [temps] [prix]` - Crée un giveaway
+        `+morse [texte]` - Convertit en morse
+        """
+        await ctx.send(fun_help)
+
+    elif categorie.lower() == "info":
+        info_help = """
+        **Commandes d'information:**
+        `+avatar [utilisateur]` - Affiche un avatar
+        `+userinfo [utilisateur]` - Info utilisateur
+        `+serveurinfo` - Info du serveur
+        `+servericon` - Icône du serveur
+        `+servercount` - Nombre de serveurs
+        """
+        await ctx.send(info_help)
+
+    elif categorie.lower() == "recherche":
+        search_help = """
+        **Commandes de recherche:**
+        `+spotify [recherche]` - Recherche sur Spotify
+        `+weather [ville]` - Affiche la météo
+        `+urban [terme]` - Urban Dictionary
+        `+wiki [recherche]` - Recherche Wikipedia
+        `+anime [titre]` - Recherche un anime
+        `+github [utilisateur]` - Recherche GitHub
+        `+translate [langue] [texte]` - Traduction
+        """
+        await ctx.send(search_help)
+
+    else:
+        await ctx.send("Catégorie invalide! Utilisez `+aide` pour voir les catégories disponibles.")
 
 @bot.command()
 async def ping(ctx):
@@ -142,7 +173,7 @@ async def meteo(ctx, *, city=None):
         await ctx.send("Veuillez spécifier une ville.")
         return
         
-    API_KEY = "VOTRE_CLE_API_OPENWEATHER" 
+    API_KEY = "VOTRE_CLE_API_OPENWEATHER"  # Remplacez par votre clé API OpenWeather
     url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric&lang=fr"
     response = requests.get(url)
     if response.status_code == 200:
