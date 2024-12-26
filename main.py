@@ -147,13 +147,59 @@ async def serveurinfo(ctx):
         return
         
     guild = ctx.guild
-    embed = discord.Embed(title=f"{Fore.YELLOW + Style.BRIGHT}Info du serveur {guild.name}{Style.RESET_ALL}", color=discord.Color.blue())
+    
+    # Compter les différents types de canaux
+    text_channels = len([c for c in guild.channels if isinstance(c, discord.TextChannel)])
+    voice_channels = len([c for c in guild.channels if isinstance(c, discord.VoiceChannel)])
+    categories = len(guild.categories)
+    
+    # Compter les membres en ligne
+    online_members = len([m for m in guild.members if m.status != discord.Status.offline])
+    
+    # Créer l'embed avec plus d'informations
+    embed = discord.Embed(title=f"Informations sur {guild.name}", color=discord.Color.blue())
+    
+    # Informations générales
     embed.add_field(name="ID", value=guild.id)
     embed.add_field(name="Propriétaire", value=str(guild.owner))
-    embed.add_field(name="Membres", value=guild.member_count)
-    embed.add_field(name="Salons", value=len(guild.channels))
+    embed.add_field(name="Région", value=str(guild.region) if hasattr(guild, 'region') else "N/A")
+    
+    # Statistiques des membres
+    embed.add_field(name="Membres totaux", value=guild.member_count)
+    embed.add_field(name="Membres en ligne", value=online_members)
+    embed.add_field(name="Bots", value=len([m for m in guild.members if m.bot]))
+    
+    # Statistiques des canaux
+    embed.add_field(name="Catégories", value=categories)
+    embed.add_field(name="Salons textuels", value=text_channels)
+    embed.add_field(name="Salons vocaux", value=voice_channels)
+    
+    # Autres statistiques
     embed.add_field(name="Rôles", value=len(guild.roles))
-    embed.add_field(name="Créé le", value=guild.created_at.strftime("%d/%m/%Y"))
+    embed.add_field(name="Emojis", value=len(guild.emojis))
+    embed.add_field(name="Niveau de boost", value=guild.premium_tier)
+    
+    # Dates importantes
+    embed.add_field(name="Créé le", value=guild.created_at.strftime("%d/%m/%Y à %H:%M"))
+    
+    # Sécurité
+    verification_level = {
+        discord.VerificationLevel.none: "Aucune",
+        discord.VerificationLevel.low: "Faible",
+        discord.VerificationLevel.medium: "Moyenne",
+        discord.VerificationLevel.high: "Élevée",
+        discord.VerificationLevel.highest: "Maximum"
+    }
+    embed.add_field(name="Niveau de vérification", value=verification_level.get(guild.verification_level, "Inconnu"))
+    
+    # Ajouter l'icône du serveur comme thumbnail si disponible
+    if guild.icon:
+        embed.set_thumbnail(url=guild.icon.url)
+    
+    # Ajouter la bannière du serveur comme image si disponible
+    if guild.banner:
+        embed.set_image(url=guild.banner.url)
+    
     await ctx.send(embed=embed)
 
 @bot.command()
