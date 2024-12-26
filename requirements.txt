@@ -1,3 +1,10 @@
+requests
+colorama
+googletrans==3.1.0a0
+spotipy
+qrcode
+wikipedia
+psutil
 discord.py==1.7.3
 requests==2.31.0
 python-dotenv==1.0.0
